@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MovieMania</title>
+    <link rel="stylesheet" href="../static/style.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <header>
+        <nav>
+            <ul class="navbar">
+                <li><a href="#" class="genre-tab" data-genre="terror">Infantil</a></li>
+                <li><a href="#" class="genre-tab" data-genre="Fantastico">Fantastico</a></li>
+                <li><a href="#" class="genre-tab" data-genre="comedia">Comedia</a></li>
+                <li><a href="#" class="genre-tab" data-genre="accion">Acción</a></li>
+                <li><a href="#" class="genre-tab" data-genre="Terror">Terror</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Carrusel de Imágenes -->
+    <section class="carousel-container">
+        <div class="carousel">
+            <div class="carousel-item">
+                <img src="../static/img/reyleon.jpeg" alt="El Rey Leon">
+            </div>
+            <div class="carousel-item">
+                <img src="../static/img/brave.jpg" alt="Brave">
+            </div>
+            <div class="carousel-item">
+                <img src="../static/img/anillo.jpeg" alt="El Señor de los anillos">
+            </div>
+            <div class="carousel-item">
+                <img src="../static/img/harrypoter.jpg" alt="Harry Potter">
+            </div>
+            <div class="carousel-item">
+                <img src="../static/img/bridgetjones.jpg" alt="Bridget Jones">
+            </div>
+            <div class="carousel-item">
+                <img src="../static/img/paciencia.jpg" alt="Señor Dame Paciencia">
+            </div>
+            <div class="carousel-item">
+                <img src="../static/img/alarum.jpg" alt="Alarum">
+            </div>
+            <div class="carousel-item">
+                <img src="../static/img/ladrones.jpg" alt="Juego de Ladrones">
+            </div>
+            <div class="carousel-item">
+                <img src="../static/img/profecia.jpeg" alt="La Profecia">
+            </div>
+            <div class="carousel-item">
+                <img src="../static/img/saco.jpeg" alt="El Hombre del saco">
+            </div>
+         
+         
+        </div>
+        <button class="prev" onclick="moveSlide(-1)">&#10094;</button>
+        <button class="next" onclick="moveSlide(1)">&#10095;</button>
+    </section>
+
+    <!-- Formulario para agregar una nueva película -->
+    <section class="add-movie-form">
+        <h2>Agregar Nueva Película</h2>
+        <form action="#" method="POST">
+            <label for="title">Título:</label>
+            <input type="text" id="title" name="title" required>
+
+            <label for="director">Director:</label>
+            <input type="text" id="director" name="director" required>
+
+            <label for="year">Año:</label>
+            <input type="number" id="year" name="year" required>
+
+            <label for="genre">Género:</label>
+            <select id="genre" name="genre" required>
+                <option value="terror">Terror</option>
+                <option value="romantica">Romántica</option>
+                <option value="comedia">Comedia</option>
+                <option value="accion">Acción</option>
+                <option value="fantastico">Fantástico</option>
+            </select>
+
+            <button type="submit">Agregar</button>
+        </form>
+    </section>
+
+    <!-- Lista de películas -->
+    <section class="movie-list">
+        <h2>Películas Disponibles</h2>
+        <ul id="movie-list">
+            <!-- Aquí se mostrarán las películas con JavaScript -->
+        </ul>
+    </section>
+
+    <footer>
+        <p>&copy; 2025 - MovieMania</p>
+    </footer>
+
+    <script src="../static/app.js"></script>
+</body>
+</html>
