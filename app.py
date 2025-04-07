@@ -1,45 +1,45 @@
-from flask import Flask, jsonify, request
-import requests
+from flask import Flask, jsonify, request # Marco de framework de flask, devolver respuestas en formato Json.
+import requests # Acceder a las llamadas a la API
 
-app = Flask(__name__)
+app = Flask(__name__) # Orden a flask de iniciar la app
 
-# clave de la api y direccion base de la url
+# Clave de la api y direccion base de la url
 API_KEY = '0793a5c442c049e9b0321cf71326063b'
 BASE_URL = 'https://api.themoviedb.org/3/'
 
-# Base de datos en memoria para almacenar las películas
+# Base de datos en memoria para almacenar las películas, la usamos solo mientras la app esta en ejecucion
 movies_db = []
 
 # Crear (Añadir una película a la base de datos)
 @app.route('/movies', methods=['POST'])
 def add_movie():
-    title = request.json.get('title')
+    title = request.json.get('title') # Cogemos el titulo de el cuerpo de la solicitud
     if not title:
         return jsonify({'error': 'El título es obligatorio'}), 400
 
-    # Buscar la película en API externa (TMDb)
+    # Buscar la película en API externa, mandamos titulo y clave para la busqueda (TMDb)
     response = requests.get(f'{BASE_URL}search/movie', params={'query': title, 'api_key': API_KEY})
 
-    if response.status_code != 200:
+    if response.status_code != 200: # Verificamos respuesta de la API
         return jsonify({'error': 'Error al conectar con la API externa'}), 500
 
     # Convertir la respuesta en formato JSON
     data = response.json()
 
-    # Verificar si se encontraron resultados
+    # Verificar si se encontraron resultados y si es asi se coge la primera aparicion
     if data.get('results'):
-        movie_data = data['results'][0]  # Coger el primer resultado
-        movie = {
+        movie_data = data['results'][0]  
+        movie = { # Creacion de diccionario 
             'id': len(movies_db) + 1,  # Asigna un ID único (se ba sumando)
             'title': movie_data['title'],
             'year': movie_data['release_date'][:4],  #
             'genre': 'N/A', 
             'plot': movie_data['overview']
         }
-        movies_db.append(movie)
+        movies_db.append(movie) # Se agrega a la base de datos antes declarada
         return jsonify(movie), 201
     else:
-        return jsonify({'error': 'Pelicula no encontrada'}), 404
+        return jsonify({'error': 'Pelicula no encontrada'}), 404 # Si no es asi mostramos el error
 
 # Leer todas las películas de tu base de datos local
 @app.route('/movies', methods=['GET'])
@@ -47,9 +47,9 @@ def get_movies():
     return jsonify(movies_db)
 
 # Leer una película por ID
-@app.route('/movies/<int:movie_id>', methods=['GET'])
+@app.route('/movies/<int:movie_id>', methods=['GET']) # Se ejecuta cuando hacemos solicitud con el id de la peli
 def get_movie(movie_id):
-    movie = next((m for m in movies_db if m['id'] == movie_id), None)
+    movie = next((m for m in movies_db if m['id'] == movie_id), None) # Se busca en la base de datos local
     if not movie:
         return jsonify({'error': 'Pelicula no encontrada'}), 404
     return jsonify(movie)
@@ -63,7 +63,7 @@ def update_movie(movie_id):
 
     # Obtener los nuevos datos de la película
     data = request.json
-    movie['title'] = data.get('title', movie['title'])
+    movie['title'] = data.get('title', movie['title']) # Si el dato esta lo actualizamos, sino dejamos el actual
     movie['year'] = data.get('year', movie['year'])
     movie['genre'] = data.get('genre', movie['genre'])
     movie['plot'] = data.get('plot', movie['plot'])
@@ -73,7 +73,7 @@ def update_movie(movie_id):
 # Eliminar una película por ID
 @app.route('/movies/<int:movie_id>', methods=['DELETE'])
 def delete_movie(movie_id):
-    global movies_db
+    global movies_db # Ncesitamos usar global ya que es una variable global, si quiero modificar debo poner eso
     movie = next((m for m in movies_db if m['id'] == movie_id), None)
     if not movie:
         return jsonify({'error': 'Pelicula no encontrada'}), 404
