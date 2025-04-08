@@ -15,19 +15,6 @@ IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/w342'
 
 # Base de datos en memoria para almacenar las películas, la usamos solo mientras la app esta en ejecucion
 movies_db = []
-import random
-import requests
-from flask import Flask, render_template
-
-app = Flask(__name__)
-
-API_KEY = '0793a5c442c049e9b0321cf71326063b'
-BASE_URL = 'https://api.themoviedb.org/3/'
-
-IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/w342'
-
-# Base de datos en memoria para almacenar las películas, la usamos solo mientras la app esta en ejecucion
-movies_db = []
 
 @app.route('/')
 def index():
