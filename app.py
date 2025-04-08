@@ -132,7 +132,7 @@ app = Flask(__name__)
 API_KEY = '0793a5c442c049e9b0321cf71326063b'
 BASE_URL = 'https://api.themoviedb.org/3/'
 
-IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/w500'
+IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/w342'
 
 # Base de datos en memoria para almacenar las películas, la usamos solo mientras la app esta en ejecucion
 movies_db = []
@@ -215,6 +215,13 @@ def update_movie(movie_id):
 
     return jsonify(movie)
 
+# Editar una película por ID
+@app.route('/movies/edit/<int:movie_id>', methods=['GET', 'POST'])
+def edit_movie(movie_id):
+    movie = next((m for m in movies_db if m['id'] == movie_id), None)
+    if not movie:
+        return jsonify({'error': 'Película no encontrada'}), 404
+
 # Eliminar una película por ID
 @app.route('/movies/<int:movie_id>', methods=['DELETE'])
 def delete_movie(movie_id):
@@ -228,4 +235,4 @@ def delete_movie(movie_id):
     return jsonify({'message': 'Pelicula eliminada'}), 200
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True,port=5005)
