@@ -5,22 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MovieMania</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KyZXEJ6K6v7KNj6+6q3Rz6b6Y5g5v5v5v5v5v5v5v5v5v5v5" crossorigin="anonymous">
-    <link rel="stylesheet" href="http://127.0.0.1:5000/static/css/style.css">
-<script src="{{ url_for('static', filename='js/app.js') }}"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
 
 </head>
 <body>
     <header>
-        <nav>
-            <ul class="navbar">
-                <li><a href="#" class="genre-tab" data-genre="infantil">Infantil</a></li>
-                <li><a href="#" class="genre-tab" data-genre="fantastico">Fantástico</a></li>
-                <li><a href="#" class="genre-tab" data-genre="comedia">Comedia</a></li>
-                <li><a href="#" class="genre-tab" data-genre="accion">Acción</a></li>
-                <li><a href="#" class="genre-tab" data-genre="terror">Terror</a></li>
-            </ul>
-        </nav>
-    </header>
+        <div class="welcome-container">
+            <h1 class="welcome-message">¡Bienvenido a MovieMania!</h1>
+            <p class="tagline">Tu lugar para las mejores películas de todos los géneros</p>
+        </div>
+    </header>      
+ 
 
     <section class="carousel-container">
         <div class="carousel">
@@ -30,14 +26,14 @@
                 </div>
             {% endfor %}
         </div>
-        <button class="carousel-control-prev" type="button" data-bs-target="#peliculasCarousel" data-bs-slide="prev">
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
             <span class="carousel-control-prev-icon" aria-hidden="true"></span>
             <span class="visually-hidden">Anterior</span>
-        </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#peliculasCarousel" data-bs-slide="next">
+          </button>
+          <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
             <span class="carousel-control-next-icon" aria-hidden="true"></span>
             <span class="visually-hidden">Siguiente</span>
-        </button>
+          </button>
     </section>
 
     <section class="layout-container">
@@ -86,6 +82,8 @@
                 <li>
                     <strong>{{ pelicula['title'] | e }}</strong> ({{ pelicula['year'] }}) -
                     Director: {{ pelicula['director'] | e }} - Género: {{ pelicula['genre'] | e }}
+                    <a href="{{ url_for('edit_movie', movie_id=pelicula['id']) }}" class="btn btn-primary btn-sm">Editar</a>
+                    <a href="{{ url_for('delete_movie', movie_id=pelicula['id']) }}" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de que deseas eliminar esta película?');">Eliminar</a>
                 </li>
             {% endfor %}
             
