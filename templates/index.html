@@ -5,21 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MovieMania</title>
     <link rel="stylesheet" href="http://127.0.0.1:5000/static/css/style.css">
-<script src="{{ url_for('static', filename='js/app.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
 
 </head>
 <body>
     <header>
-        <nav>
-            <ul class="navbar">
-                <li><a href="#" class="genre-tab" data-genre="infantil">Infantil</a></li>
-                <li><a href="#" class="genre-tab" data-genre="fantastico">Fantástico</a></li>
-                <li><a href="#" class="genre-tab" data-genre="comedia">Comedia</a></li>
-                <li><a href="#" class="genre-tab" data-genre="accion">Acción</a></li>
-                <li><a href="#" class="genre-tab" data-genre="terror">Terror</a></li>
-            </ul>
-        </nav>
+        <div class="welcome-container">
+            <h1 class="welcome-message">¡Bienvenido a MovieMania!</h1>
+            <p class="tagline">Tu lugar para las mejores películas de todos los géneros</p>
+        </div>
     </header>
+    
 
     <section class="carousel-container">
         <div class="carousel">
@@ -54,10 +50,11 @@
                 <img src="{{ url_for('static', filename='img/saco.jpeg') }}" alt="El Hombre del saco">
             </div>
         </div>
-        <button class="prev" onclick="moveSlide(-1)">&#10094;</button>
-        <button class="next" onclick="moveSlide(1)">&#10095;</button>
+        <button class="prev">&#10094;</button>
+        <button class="next">&#10095;</button>
     </section>
-
+    
+    
     <section class="layout-container">
         <div class="add-movie-form">
             <h2>Agregar Nueva Película</h2>

@@ -1,29 +1,35 @@
-let slideIndex = 0;
-const slides = document.querySelectorAll('.carousel-item');
-const totalSlides = slides.length;
-const itemsPerSlide = 3; // Mostrar tres elementos a la vez
+document.addEventListener("DOMContentLoaded", function() {
+    const carousel = document.querySelector('.carousel');
+    const carouselItems = document.querySelectorAll('.carousel-item');
+    let currentIndex = 0;
 
-// Ajusta el ancho del carrusel para que se muestren tres elementos a la vez
-document.querySelector('.carousel').style.width = `${itemsPerSlide * 100}%`;
-
-function moveSlide(n) {
-    slideIndex += n;
-
-    // Asegura que no se salga del rango
-    if (slideIndex < 0) {
-        slideIndex = Math.floor(totalSlides / itemsPerSlide) * itemsPerSlide; // Mueve al final del carrusel
-    } else if (slideIndex > totalSlides - itemsPerSlide) {
-        slideIndex = 0; // Vuelve al principio
+    // Function to move the carousel
+    function moveCarousel() {
+        const totalItems = carouselItems.length;
+        const itemWidth = carouselItems[0].clientWidth;
+        carousel.style.transform = `translateX(-${currentIndex * itemWidth}px)`;
     }
 
-    // Mueve el carrusel
-    const offset = -(slideIndex * (100 / itemsPerSlide)); // Desplaza en porcentaje
-    document.querySelector('.carousel').style.transform = `translateX(${offset}%)`;
-}
+    // Previous button
+    document.querySelector('.prev').addEventListener('click', function() {
+        if (currentIndex > 0) {
+            currentIndex--;
+        } else {
+            currentIndex = carouselItems.length - 1;
+        }
+        moveCarousel();
+    });
 
-// Inicializa el carrusel
-moveSlide(0);
+    // Next button
+    document.querySelector('.next').addEventListener('click', function() {
+        if (currentIndex < carouselItems.length - 1) {
+            currentIndex++;
+        } else {
+            currentIndex = 0;
+        }
+        moveCarousel();
+    });
 
-// Botones de navegación
-document.querySelector('.prev').addEventListener('click', () => moveSlide(-1));
-document.querySelector('.next').addEventListener('click', () => moveSlide(1));
+    // Set the initial position of the carousel
+    moveCarousel();
+});
