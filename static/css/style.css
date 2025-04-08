@@ -177,6 +177,28 @@ header {
 .movie-list li:last-child {
     border-bottom: none;
 }
+.btn-primary{
+    background-color: #4CAF50; /* Verde */
+    border-color: #4CAF50;
+    border-radius: 5px;
+    text-decoration: none;
+}
+
+.btn-primary:hover {
+    background-color: #015505;
+    border-color: #043b04;
+}
+.btn-danger{
+    background-color: #ff0000; /* rojo */
+    border-color: #ff0000;
+    border-radius: 5px;
+    text-decoration: none;
+}
+
+.btn-danger:hover {
+    background-color: #550101;
+    border-color: #3b0404;
+}
 
 /* -------- FOOTER -------- */
 footer {
