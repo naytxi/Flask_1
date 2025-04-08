@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MovieMania</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KyZXEJ6K6v7KNj6+6q3Rz6b6Y5g5v5v5v5v5v5v5v5v5v5v5" crossorigin="anonymous">
     <link rel="stylesheet" href="http://127.0.0.1:5000/static/css/style.css">
 <script src="{{ url_for('static', filename='js/app.js') }}"></script>
 
@@ -23,39 +24,20 @@
 
     <section class="carousel-container">
         <div class="carousel">
-            <div class="carousel-item">
-                <img src="{{ url_for('static', filename='img/reyleon.jpeg') }}" alt="El Rey Leon">
-            </div>
-            <div class="carousel-item">
-                <img src="{{ url_for('static', filename='img/brave.jpg') }}" alt="Brave">
-            </div>
-            <div class="carousel-item">
-                <img src="{{ url_for('static', filename='img/sranillo.jpeg') }}" alt="El Señor de los anillos">
-            </div>
-            <div class="carousel-item">
-                <img src="{{ url_for('static', filename='img/harrypoter.jpg') }}" alt="Harry Potter">
-            </div>
-            <div class="carousel-item">
-                <img src="{{ url_for('static', filename='img/bridgetjones.jpg') }}" alt="Bridget Jones">
-            </div>
-            <div class="carousel-item">
-                <img src="{{ url_for('static', filename='img/paciencia.jpg') }}" alt="Señor Dame Paciencia">
-            </div>
-            <div class="carousel-item">
-                <img src="{{ url_for('static', filename='img/alarum.jpg') }}" alt="Alarum">
-            </div>
-            <div class="carousel-item">
-                <img src="{{ url_for('static', filename='img/ladrones.jpg') }}" alt="Juego de Ladrones">
-            </div>
-            <div class="carousel-item">
-                <img src="{{ url_for('static', filename='img/profecia.jpeg') }}" alt="La Profecia">
-            </div>
-            <div class="carousel-item">
-                <img src="{{ url_for('static', filename='img/saco.jpeg') }}" alt="El Hombre del saco">
-            </div>
+            {% for pelicula in peliculas %}
+                <div class="carousel-item">
+                    <img src="{{ pelicula['poster_url'] }}" alt="{{ pelicula['title'] }}">
+                </div>
+            {% endfor %}
         </div>
-        <button class="prev" onclick="moveSlide(-1)">&#10094;</button>
-        <button class="next" onclick="moveSlide(1)">&#10095;</button>
+        <button class="carousel-control-prev" type="button" data-bs-target="#peliculasCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Anterior</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#peliculasCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Siguiente</span>
+        </button>
     </section>
 
     <section class="layout-container">
@@ -117,5 +99,6 @@
     <footer>
         <p>&copy; 2025 - MovieMania</p>
     </footer>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 </body>
 </html>

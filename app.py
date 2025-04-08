@@ -111,6 +111,7 @@ from flask import Flask, jsonify, request # Marco de framework de flask, devolve
  # type: ignore
 from flask import Flask, render_template, request, jsonify # Marco de framework de flask, devolver respuestas en formato Json.
 import requests # Acceder a las llamadas a la API
+import random # Eleccion aleatoria de caratulas de peliculas
 
 app = Flask(__name__) # Orden a flask de iniciar la app
 
@@ -118,12 +119,41 @@ app = Flask(__name__) # Orden a flask de iniciar la app
 API_KEY = '0793a5c442c049e9b0321cf71326063b'
 BASE_URL = 'https://api.themoviedb.org/3/'
 
+IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/w342'
+
 # Base de datos en memoria para almacenar las películas, la usamos solo mientras la app esta en ejecucion
 movies_db = []
-# crear ruta para renderizar el index
+import random
+import requests
+from flask import Flask, render_template
+
+app = Flask(__name__)
+
+API_KEY = '0793a5c442c049e9b0321cf71326063b'
+BASE_URL = 'https://api.themoviedb.org/3/'
+
+IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/w500'
+
+# Base de datos en memoria para almacenar las películas, la usamos solo mientras la app esta en ejecucion
+movies_db = []
+
 @app.route('/')
 def index():
-    return render_template('index.html', peliculas=movies_db)
+    # Realizar una solicitud a la API para obtener películas populares
+    response = requests.get(f'{BASE_URL}movie/popular', params={'api_key': API_KEY})
+    if response.status_code == 200:
+        data = response.json()
+        peliculas = data.get('results', [])
+        # Seleccionar un número determinado de películas aleatorias
+        peliculas_aleatorias = random.sample(peliculas, min(5, len(peliculas)))
+        # Construir las URLs completas de las imágenes
+        for pelicula in peliculas_aleatorias:
+            poster_path = pelicula.get('poster_path')
+            if poster_path:
+                pelicula['poster_url'] = f'{IMAGE_BASE_URL}{poster_path}'
+        return render_template('index.html', peliculas=peliculas_aleatorias)
+    else:
+        return 'Error al obtener datos de la API', 500
 
 # Crear (Añadir una película a la base de datos)
 @app.route('/movies', methods=['POST'])
