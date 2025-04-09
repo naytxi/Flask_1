@@ -7,32 +7,26 @@ import random
 
 # --- Configuración Inicial ---
 # 'app' se define aquí para poder usar app.instance_path después
-app = Flask(__name__, instance_relative_config=False) # instance_relative_config=False es el valor por defecto, pero lo ponemos por claridad
+app = Flask(__name__, instance_relative_config=False) # significa que las configuraciones no son relativas a la carpeta instance (aunque luego sí la usamos para la BD).
 
-# ¡IMPORTANTE! Cambia esto por una clave secreta real y segura
+# Esta clave sirve para proteger sesiones, formularios y mensajes flash.
 app.config['SECRET_KEY'] = 'mi_clave_secreta_super_segura_123!'
 
 # --- Configuración de la Base de Datos (CORREGIDA para carpeta instance) ---
 instance_path = app.instance_path # Obtiene la ruta absoluta a la carpeta 'instance'
 
-# Opcional: Asegura que la carpeta 'instance' exista
-# try:
-#     os.makedirs(instance_path, exist_ok=True)
-# except OSError as e:
-#     print(f"Error creando la carpeta instance: {e}") # Manejo básico de error
-
-db_path = os.path.join(instance_path, 'movies.db') # Ruta completa al archivo
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + db_path
+db_path = os.path.join(instance_path, 'movies.db')             # le dice a Flask dónde está la base de datos.
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + db_path # construye la ruta completa al archivo de la base de datos SQLite.
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-# --- Imprime la ruta para verificar (Mantenlo temporalmente) ---
+# imprime información útil al arrancar la app
 print(f"--- [INFO] Configurando SQLAlchemy ---")
 print(f"--- [INFO] Ruta de instancia: {instance_path} ---")
 print(f"--- [INFO] Intentando usar DB en: {db_path} ---")
 print(f"--- [INFO] ¿Existe el archivo DB? {os.path.exists(db_path)} ---")
 # ----------------------------------------------------------------
 
-# --- Inicializa la extensión SQLAlchemy con la app ---
+# --- Inicializa la extensión SQLAlchemy con la app INICIA LA BASE DE DATOS
 # 'db' viene de models.py
 try:
     db.init_app(app)
@@ -42,77 +36,68 @@ except Exception as e:
 
 
 # --- Clave API y URLs (Para Postman y carrusel) ---
-API_KEY = '0793a5c442c049e9b0321cf71326063b' # Tu clave TMDb
+API_KEY = '0793a5c442c049e9b0321cf71326063b'
 BASE_URL = 'https://api.themoviedb.org/3/'
 IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/w342'
 
-# --- Base de datos EN MEMORIA (para rutas originales /movies de Postman) ---
+# Sirve para simular almacenamiento temporal, para POSTMAN
 movies_db_memory = []
 
 # --- Rutas ORIGINALES (Para Postman, usan API externa y movies_db_memory) ---
-# Estas rutas NO usan la base de datos real 'movies.db'
+# Estas rutas NO usan la base de datos real de SQLITE
 
 @app.route('/movies', methods=['POST'])
 def add_movie_api():
     title = request.json.get('title')
     if not title: return jsonify({'error': 'El título es obligatorio'}), 400
 
-    try:
+    try: #En este caso, dentro del bloque try, vamos a intentar hacer una solicitud a la API externa para obtener detalles sobre la película usando el título proporcionado.
         response = requests.get(f'{BASE_URL}search/movie', params={'query': title, 'api_key': API_KEY, 'language': 'es-ES'}, timeout=10)
-        response.raise_for_status() # Lanza error para 4xx/5xx
-    except requests.exceptions.RequestException as e:
+        response.raise_for_status()  # para verificar si la respuesta HTTP fue exitosa.
+    except requests.exceptions.RequestException as e: #Sino salta a esta linea y pone el error
         return jsonify({'error': f'Error al conectar con la API externa: {e}'}), 500
 
-    data = response.json()
-    if data.get('results'):
-        movie_data = data['results'][0]
-        movie = {
+    data = response.json() #Si ha tenido exito convierte la respuesta JSON de la APY en un diccionario python
+    if data.get('results'): #SI result tiene datos se entra en la siguiene condicional
+        movie_data = data['results'][0] #Sacamos el primer elemento
+        movie = { #Creamos el diccionario
             'id': len(movies_db_memory) + 1,
             'title': movie_data.get('title', 'N/A'),
             'year': movie_data.get('release_date', 'N/A')[:4],
             'genre': 'N/A',
             'plot': movie_data.get('overview', 'N/A')
         }
-        movies_db_memory.append(movie)
-        return jsonify(movie), 201
+        movies_db_memory.append(movie) #Añadimos el nuevo objeto a la lista de en la memoria
+        return jsonify(movie), 201 #Devuelve un JSON con la pelicula que se acaba de agregar (el contenido del diccionario movie)
     else:
         return jsonify({'error': 'Pelicula no encontrada en API externa'}), 404
 
-@app.route('/movies', methods=['GET'])
+@app.route('/movies', methods=['GET']) #Cogemos todas las peliculas almacenadas en la lista de la memoria
 def get_movies_api():
     return jsonify(movies_db_memory)
 
-@app.route('/movies/<int:movie_id>', methods=['GET'])
+@app.route('/movies/<int:movie_id>', methods=['GET']) #Nos movemos ya por id!
 def get_movie_api(movie_id):
-    movie = next((m for m in movies_db_memory if m['id'] == movie_id), None)
+    movie = next((m for m in movies_db_memory if m['id'] == movie_id), None) #busca la película en la lista movies_db_memory 
     if not movie: return jsonify({'error': 'Pelicula no encontrada en memoria'}), 404
-    return jsonify(movie)
+    return jsonify(movie) #Si encuentra convierte diccionario en JSON
 
 @app.route('/movies/<int:movie_id>', methods=['PUT'])
 def update_movie_api(movie_id):
     movie = next((m for m in movies_db_memory if m['id'] == movie_id), None)
     if not movie: return jsonify({'error': 'Pelicula no encontrada en memoria'}), 404
-    data = request.json
+    data = request.json #se cambia la solicitud de JSON a diccionario
     movie['title'] = data.get('title', movie['title'])
     movie['year'] = data.get('year', movie['year'])
     movie['genre'] = data.get('genre', movie['genre'])
     movie['plot'] = data.get('plot', movie['plot'])
-    return jsonify(movie)
-
-# Ruta /movies/edit/<id> original - Parece incompleta/sin uso real
-@app.route('/movies/edit/<int:movie_id>', methods=['GET', 'POST'])
-def edit_movie_original(movie_id):
-    movie = next((m for m in movies_db_memory if m['id'] == movie_id), None)
-    if not movie:
-        return jsonify({'error': 'Película no encontrada en memoria (ruta original)'}), 404
-    return jsonify(movie) # Simplemente devuelve JSON
-
+    return jsonify(movie) #volvemos a cambiar a JSON
 
 @app.route('/movies/<int:movie_id>', methods=['DELETE'])
 def delete_movie_api(movie_id):
-    global movies_db_memory
-    initial_len = len(movies_db_memory)
-    movies_db_memory = [m for m in movies_db_memory if m['id'] != movie_id]
+    global movies_db_memory #necesario para modificar la variable global
+    initial_len = len(movies_db_memory) # guarda el número de elementos inicial que tiene la lista 
+    movies_db_memory = [m for m in movies_db_memory if m['id'] != movie_id] # comprensión de listas para crear una nueva lista con todas las películas sin las eliminadas
     if len(movies_db_memory) == initial_len: return jsonify({'error': 'Pelicula no encontrada en memoria'}), 404
     return jsonify({'message': 'Pelicula eliminada de memoria'}), 200
 
