@@ -4,99 +4,121 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MovieMania</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KyZXEJ6K6v7KNj6+6q3Rz6b6Y5g5v5v5v5v5v5v5v5v5v5v5" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
-
 </head>
 <body>
     <header>
         <div class="welcome-container">
             <h1 class="welcome-message">¡Bienvenido a MovieMania!</h1>
-            <p class="tagline">Tu lugar para las mejores películas de todos los géneros</p>
+            <p class="tagline">Tu lugar para las mejores películas</p>
         </div>
-    </header>      
- 
+    </header>
 
-    <section class="carousel-container">
-        <div class="carousel">
-            {% for pelicula in peliculas %}
-                <div class="carousel-item">
-                    <img src="{{ pelicula['poster_url'] }}" alt="{{ pelicula['title'] }}">
-                </div>
-            {% endfor %}
-        </div>
-        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
-            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Anterior</span>
-          </button>
-          <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
-            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Siguiente</span>
-          </button>
-    </section>
+    <main class="container mt-4">
 
-    <section class="layout-container">
-        <div class="add-movie-form">
-            <h2>Agregar Nueva Película</h2>
-            {% with messages = get_flashed_messages(with_categories=true) %}
-                {% if messages %}
-                    <div class="flashes">
-                    {% for category, message in messages %}
-                        <p class="{{ category }}">{{ message | e }}</p>
-                    {% endfor %}
+        <section class="carousel-container mb-5">
+            <h2 class="text-center mb-3">Populares Ahora</h2>
+            {% if peliculas_api %} {# Usa la variable para la API #}
+            <div id="carouselApiPopular" class="carousel slide" data-bs-ride="carousel">
+                <div class="carousel-inner">
+                    {% for pelicula in peliculas_api %} {# Itera sobre peliculas_api #}
+                    <div class="carousel-item {% if loop.first %}active{% endif %}">
+                         {# Imagen por defecto si no hay poster_url #}
+                         <img src="{{ pelicula.poster_url | default(url_for('static', filename='images/default_poster.png')) }}" class="d-block mx-auto" style="max-height: 400px; width: auto; border-radius: 8px;" alt="{{ pelicula.title }}">
+                         <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-75 rounded p-2">
+                            <h5 class="fs-6 mb-0">{{ pelicula.title }}</h5>
+                       </div>
                     </div>
-                {% endif %}
-            {% endwith %}
+                    {% endfor %}
+                </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#carouselApiPopular" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span><span class="visually-hidden">Anterior</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#carouselApiPopular" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span><span class="visually-hidden">Siguiente</span>
+                </button>
+            </div>
+            {% else %}
+                <div class="alert alert-warning text-center" role="alert">
+                    No se pudieron cargar películas populares o no hay disponibles en este momento.
+                </div>
+            {% endif %}
+        </section>
 
+        <section class="row g-4">
+            <div class="col-lg-5">
+                <div class="add-movie-form card p-4 shadow-sm h-100"> {# h-100 para intentar igualar alturas si es necesario #}
+                    <h2 class="mb-3">Agregar Película a Mi Colección (Base de Datos)</h2>
 
-            <form action="{{ url_for('add_movie') }}" method="POST">
-                <label for="title">Título:</label>
-                <input type="text" id="title" name="title" required>
+                    {# Incluye la plantilla para mostrar mensajes flash #}
+                    {% include '_flash_messages.html' %}
 
-                <label for="director">Director:</label>
-                <input type="text" id="director" name="director" required>
+                    <form action="{{ url_for('add_movie_db') }}" method="POST">
+                        <div class="mb-3">
+                            <label for="title" class="form-label">Título:</label>
+                            <input type="text" id="title" name="title" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="director" class="form-label">Director:</label>
+                            <input type="text" id="director" name="director" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="year" class="form-label">Año:</label>
+                            <input type="number" id="year" name="year" class="form-control" placeholder="Ej: 2024" min="1888" max="2030" required> {# Añadido min/max básico #}
+                        </div>
+                        <div class="mb-3">
+                            <label for="genre" class="form-label">Género:</label>
+                            <select id="genre" name="genre" class="form-select" required>
+                                <option value="" disabled selected>Selecciona un género</option>
+                                <option value="Infantil">Infantil</option>
+                                <option value="Fantástico">Fantástico</option>
+                                <option value="Comedia">Comedia</option>
+                                <option value="Acción">Acción</option>
+                                <option value="Terror">Terror</option>
+                                <option value="Romántica">Romántica</option>
+                                <option value="Drama">Drama</option>
+                                <option value="Ciencia Ficción">Ciencia Ficción</option>
+                                <option value="Documental">Documental</option>
+                                <option value="Otro">Otro</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-success w-100 mt-3">Agregar a Colección</button>
+                    </form>
+                </div>
+            </div>
 
-                <label for="year">Año:</label>
-                <input type="number" id="year" name="year" required>
+            <div class="col-lg-7">
+                <div class="movie-list card p-4 shadow-sm h-100"> {# h-100 para intentar igualar alturas si es necesario #}
+                    <h2 class="mb-3">Mi Colección (Base de Datos)</h2>
+                    <ul id="movie-list-db" class="list-group list-group-flush">
+                        {% if peliculas_db %} {# Usa la variable para la BD #}
+                            {% for pelicula in peliculas_db %} {# Itera sobre peliculas_db #}
+                            <li class="list-group-item d-flex flex-wrap justify-content-between align-items-center gap-2"> {# gap-2 añade espacio #}
+                                <div class="me-3"> {# Quitado mb-2 mb-md-0, gap se encarga #}
+                                    <strong>{{ pelicula.title | e }}</strong> ({{ pelicula.year }}) <br>
+                                    <small class="text-muted">Director: {{ pelicula.director | e }} - Género: {{ pelicula.genre | e }}</small>
+                                </div>
+                                <div class="btn-group" role="group" aria-label="Acciones para {{ pelicula.title }}"> {# Grupo de botones para accesibilidad #}
+                                    <a href="{{ url_for('edit_movie_db_form', movie_id=pelicula.id) }}" class="btn btn-outline-primary btn-sm">Editar</a>
+                                    <form action="{{ url_for('delete_movie_db', movie_id=pelicula.id) }}" method="POST" class="d-inline" onsubmit="return confirm('¿Estás seguro de querer eliminar &quot;{{ pelicula.title | e }}&quot; de tu colección?');"> {# Confirmación mejorada #}
+                                       <button type="submit" class="btn btn-outline-danger btn-sm">Eliminar</button>
+                                    </form>
+                                </div>
+                            </li>
+                            {% endfor %}
+                        {% else %}
+                            <li class="list-group-item text-center text-muted">Tu colección está vacía. ¡Añade alguna película!</li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+        </section> </main>
 
-                <label for="genre">Género:</label>
-                <select id="genre" name="genre" required>
-                    <option value="Infantil">Infantil</option>
-                    <option value="Fantástico">Fantástico</option>
-                    <option value="Comedia">Comedia</option>
-                    <option value="Acción">Acción</option>
-                    <option value="Terror">Terror</option>
-                    <option value="Romántica">Romántica</option>
-                </select>
-
-                <button type="submit">Agregar</button>
-            </form>
-        </div>
-
-        <div class="movie-list">
-            <h2>Películas Disponibles</h2>
-            <ul id="movie-list">
-                {% if peliculas %}
-                {% for pelicula in peliculas %}
-                <li>
-                    <strong>{{ pelicula['title'] | e }}</strong> ({{ pelicula['year'] }}) -
-                    Director: {{ pelicula['director'] | e }} - Género: {{ pelicula['genre'] | e }}
-                    <a href="{{ url_for('edit_movie', movie_id=pelicula['id']) }}" class="btn btn-primary btn-sm">Editar</a>
-                    <a href="{{ url_for('delete_movie', movie_id=pelicula['id']) }}" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de que deseas eliminar esta película?');">Eliminar</a>
-                </li>
-            {% endfor %}
-            
-                {% else %}
-                    <li>No hay películas añadidas todavía.</li>
-                {% endif %}
-            </ul>
-        </div>
-    </section>
-
-    <footer>
-        <p>&copy; 2025 - MovieMania</p>
+    <footer class="mt-5 text-center py-3 bg-dark text-light"> {# Estilo básico de footer #}
+        <p class="mb-0">&copy; 2025 - MovieMania</p>
     </footer>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
-</body>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    </body>
 </html>

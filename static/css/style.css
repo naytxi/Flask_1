@@ -1,3 +1,4 @@
+/* static/css/style.css (CORREGIDO) */
 * {
     margin: 0;
     padding: 0;
@@ -10,220 +11,172 @@ body {
     color: #333;
     line-height: 1.6;
     font-size: 16px;
+    /* Añadido para asegurar que el footer quede abajo si el contenido es corto */
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
 }
 
-/* -------- NAVBAR -------- */
-/* Header Styles */
+main {
+    /* Permite que el contenido principal crezca */
+    flex-grow: 1;
+}
+
+
+/* -------- Header Styles -------- */
 header {
     background-color: #2c3e50;
     padding: 50px 0;
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 30vh; /* Full screen height */
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+    /* height: 30vh; /* Quitado height fijo, deja que el contenido lo determine */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
     text-align: center;
+    color: #ecf0f1; /* Movido color aquí */
 }
 
 .welcome-container {
-    color: #ecf0f1;
-    animation: fadeIn 2s ease-out;
+    /* color: #ecf0f1; -- Movido a header */
+    animation: fadeIn 1.5s ease-out;
 }
 
 .welcome-message {
-    font-size: 48px;
+    font-size: 2.5rem; /* Ligeramente más pequeño */
     font-weight: bold;
     margin-bottom: 10px;
-    animation: slideInFromTop 1.5s ease-out;
+    animation: slideInFromTop 1s ease-out;
 }
 
 .tagline {
-    font-size: 22px;
+    font-size: 1.25rem; /* Ligeramente más pequeño */
     font-style: italic;
     opacity: 0;
-    animation: fadeIn 2s ease-in-out 1s forwards;
+    animation: fadeIn 1.5s ease-in-out 0.5s forwards;
 }
 
-/* Keyframe Animations */
+/* -------- Keyframe Animations -------- */
 @keyframes fadeIn {
-    from {
-        opacity: 0;
-    }
-    to {
-        opacity: 1;
-    }
+    from { opacity: 0; }
+    to { opacity: 1; }
 }
 
 @keyframes slideInFromTop {
-    from {
-        transform: translateY(-50px);
-        opacity: 0;
-    }
-    to {
-        transform: translateY(0);
-        opacity: 1;
-    }
-}
- -------- CAROUSEL -------- */
-.carousel-container {
-    position: relative;
-    width: 100%;
-    overflow: hidden; /* Asegúrate de que no se vean las imágenes fuera de la zona visible */
+    from { transform: translateY(-30px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
 }
 
-.carousel {
-    display: flex;
-    transition: transform 0.5s ease-in-out;
-    overflow: hidden; /* Oculta imágenes fuera del contenedor */
-}
-
-.carousel-item {
-    flex: 0 0 33.33%; /* Cada imagen ocupará el 33.33% del contenedor, es decir, tres imágenes por fila */
-    box-sizing: border-box;
-    padding: 0 10px; /* Espacio entre imágenes */
-    display: flex;
-    justify-content: center;
-}
-
-.carousel-item img {
-    width: 100%; /* Las imágenes ocupan todo el espacio de su contenedor */
-    height: auto; /* Mantener la proporción */
-}
-
-/* Estilo para los botones de navegación */
-.prev, .next {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    background-color: rgba(0, 0, 0, 0.5);
-    color: white;
-    border: none;
-    padding: 10px;
-    cursor: pointer;
-    font-size: 24px;
-}
-
-.prev {
-    left: 10px;
-}
-
-.next {
-    right: 10px;
-}
-
-
-/* -------- LAYOUT - FORMULARIO Y LISTA DE PELÍCULAS -------- */
-.layout-container {
-    display: flex;
-    justify-content: space-between;
-    gap: 20px;
-    margin-top: 50px;
-    flex-wrap: wrap; /* Esto permite que se adapten en pantallas pequeñas */
-}
-
-.add-movie-form {
-    background-color: #fff;
-    width: 48%;
-    padding: 30px;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-}
-
-.add-movie-form h2 {
+/* -------- Carousel -------- */
+/* Los estilos del carrusel de Bootstrap suelen ser suficientes. */
+/* Puedes añadir estilos específicos aquí si es necesario, pero */
+/* evita redefinir el display flex o los widths de .carousel-item */
+/* que maneja Bootstrap. */
+.carousel-container h2 { /* Estilo para el título "Populares Ahora" */
     text-align: center;
-    margin-bottom: 20px;
+    margin-bottom: 1.5rem;
     color: #2c3e50;
 }
-
-.add-movie-form label {
-    display: block;
-    margin-top: 15px;
-    font-weight: bold;
+.carousel-item img {
+    border-radius: 8px; /* Bordes redondeados como en el html */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }
 
-.add-movie-form input,
-.add-movie-form select {
-    width: 100%;
-    padding: 10px;
-    margin-top: 5px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-    transition: border-color 0.3s ease;
-}
 
-.add-movie-form input:focus,
-.add-movie-form select:focus {
-    border-color: #27ae60;
-}
+/* -------- LAYOUT - FORMULARIO Y LISTA (Usando Bootstrap Grid) -------- */
 
-.add-movie-form button {
-    background-color: #27ae60;
-    color: white;
-    padding: 12px;
-    border: none;
-    border-radius: 5px;
-    font-size: 1.1rem;
-    cursor: pointer;
-    margin-top: 20px;
-    width: 100%;
-    transition: background 0.3s ease-in-out;
-}
+/* NO necesitamos .layout-container si usamos .container y .row de Bootstrap */
 
-.add-movie-form button:hover,
-.add-movie-form button:focus {
-    background-color: #2ecc71;
-}
-
-.movie-list {
+/* Estilos para las tarjetas que contienen el formulario y la lista */
+.add-movie-form.card,
+.movie-list.card {
     background-color: #fff;
-    width: 48%;
-    padding: 25px;
-    border-radius: 10px;
-    box-shadow: 0 3px 6px rgba(0,0,0,0.15);
-    overflow-y: auto;
+    border: none; /* Bootstrap ya pone un borde sutil, quítalo si prefieres solo sombra */
+    /* width: 48%; ELIMINADO - Bootstrap (.col-lg-*) lo maneja */
+    /* padding: 30px; Bootstrap .card ya tiene padding, ajusta si es necesario */
+    /* border-radius: 10px; Bootstrap .card ya tiene, ajusta si es necesario */
+    /* box-shadow: 0 4px 8px rgba(0,0,0,0.2); Bootstrap ya tiene, ajusta si es necesario */
 }
 
+/* Títulos dentro de las tarjetas */
+.add-movie-form h2,
 .movie-list h2 {
     text-align: center;
-    margin-bottom: 20px;
+    margin-bottom: 1.5rem; /* Aumentado margen inferior */
     color: #2c3e50;
+    font-size: 1.5rem; /* Ajustado tamaño */
 }
 
+/* Estilos específicos del formulario */
+.add-movie-form label {
+    /* display: block; Ya es block por defecto en Bootstrap */
+    /* margin-top: 15px; Bootstrap .mb-3 en el HTML maneja esto */
+    font-weight: bold;
+    margin-bottom: 0.3rem; /* Pequeño espacio bajo la etiqueta */
+}
+
+/* Inputs y Select del formulario - Heredan estilos de Bootstrap .form-control / .form-select */
+/* Puedes añadir transiciones si quieres */
+.add-movie-form .form-control,
+.add-movie-form .form-select {
+    transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+.add-movie-form .form-control:focus,
+.add-movie-form .form-select:focus {
+   border-color: #27ae60;
+   box-shadow: 0 0 0 0.25rem rgba(39, 174, 96, 0.25); /* Sombra de foco Bootstrap */
+}
+
+/* Botón del formulario - Hereda .btn de Bootstrap */
+.add-movie-form button[type="submit"] {
+    /* background-color: #27ae60; Usa clases Bootstrap: btn btn-success */
+    /* color: white; */
+    /* padding: 12px; */
+    /* border: none; */
+    /* border-radius: 5px; */
+    font-size: 1.1rem;
+    /* cursor: pointer; */
+    /* margin-top: 20px; */
+    /* width: 100%; */
+    /* transition: background 0.3s ease-in-out; */
+}
+/* No necesitas :hover/:focus si usas clases .btn-* de Bootstrap */
+
+
+/* Estilos específicos de la lista */
 .movie-list ul {
-    list-style: none;
-    padding-left: 0;
+    /* list-style: none; Ya lo hace .list-group de Bootstrap */
+    /* padding-left: 0; Ya lo hace .list-group de Bootstrap */
 }
 
-.movie-list li {
-    padding: 12px;
-    border-bottom: 1px solid #eee;
+.movie-list li.list-group-item { /* Sé más específico para no afectar otros li */
+    /* padding: 12px; Ajustado por .list-group-item */
+    /* border-bottom: 1px solid #eee; Manejado por .list-group */
+    background-color: transparent; /* Asegura que no tenga fondo propio si la ul lo tiene */
 }
 
-.movie-list li:last-child {
-    border-bottom: none;
-}
-.btn-primary{
-    background-color: #4CAF50; /* Verde */
+
+/* Estilos botones Editar/Eliminar */
+/* Es mejor usar las clases de Bootstrap directamente en el HTML */
+/* ej: class="btn btn-primary btn-sm", class="btn btn-danger btn-sm" */
+/* Si QUIERES sobrescribir los colores de Bootstrap para esos botones: */
+/*
+.movie-list .btn-primary {
+    background-color: #4CAF50;
     border-color: #4CAF50;
-    border-radius: 5px;
-    text-decoration: none;
 }
-
-.btn-primary:hover {
+.movie-list .btn-primary:hover {
     background-color: #015505;
     border-color: #043b04;
 }
-.btn-danger{
-    background-color: #ff0000; /* rojo */
+.movie-list .btn-danger {
+    background-color: #ff0000;
     border-color: #ff0000;
-    border-radius: 5px;
-    text-decoration: none;
 }
-
-.btn-danger:hover {
-    background-color: #550101;
-    border-color: #3b0404;
+.movie-list .btn-danger:hover {
+    background-color: #a50000;
+    border-color: #8b0000;
 }
+*/
 
 /* -------- FOOTER -------- */
 footer {
@@ -231,28 +184,14 @@ footer {
     color: #ecf0f1;
     padding: 15px 0;
     text-align: center;
-    margin-top: 50px;
+    margin-top: auto; /* Empuja el footer abajo si el contenido es corto */
     font-size: 0.9rem;
+    width: 100%; /* Asegura que ocupe todo el ancho */
 }
 
 /* -------- MEDIA QUERIES -------- */
-@media (max-width: 768px) {
-    .navbar {
-        flex-direction: column;
-        gap: 15px;
-    }
-
-    .carousel-container {
-        width: 95%;
-    }
-
-    .movie-list,
-    .add-movie-form {
-        width: 100%;
-    }
-
-    .layout-container {
-        flex-direction: column;
-        gap: 30px;
-    }
-}
+/* Bootstrap ya maneja la adaptación de las columnas .col-lg-* a pantallas pequeñas */
+/* No necesitas redefinir widths o flex-direction aquí si usas bien las clases de Bootstrap */
+/* @media (max-width: 768px) { */
+    /* ELIMINADO */
+/* } */

@@ -1,0 +1,25 @@
+{# templates/_flash_messages.html #}
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, message in messages %}
+      {# Asigna una clase de alerta Bootstrap basada en la categoría del mensaje flash #}
+      {% set alert_class = category if category in ['success', 'warning', 'danger', 'info'] else 'secondary' %}
+      <div class="alert alert-{{ alert_class }} alert-dismissible fade show mt-3" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}{# templates/_flash_messages.html #}
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, message in messages %}
+      {# Asigna una clase de alerta Bootstrap basada en la categoría del mensaje flash #}
+      {% set alert_class = category if category in ['success', 'warning', 'danger', 'info'] else 'secondary' %}
+      <div class="alert alert-{{ alert_class }} alert-dismissible fade show mt-3" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}

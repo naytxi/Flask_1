@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Película de Colección - MovieMania</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    </head>
+<body>
+    <div class="container mt-5">
+         <div class="row justify-content-center">
+            <div class="col-md-8 col-lg-6">
+                <div class="card p-4 shadow-sm">
+                    <h2 class="mb-4 text-center">Editar Película de Mi Colección</h2>
+
+                    {% include '_flash_messages.html' %}
+
+                    <form action="{{ url_for('update_movie_db', movie_id=movie.id) }}" method="POST">
+                        <div class="mb-3">
+                            <label for="title" class="form-label">Título:</label>
+                            <input type="text" id="title" name="title" class="form-control" value="{{ movie.title | e }}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="director" class="form-label">Director:</label>
+                            <input type="text" id="director" name="director" class="form-control" value="{{ movie.director | e }}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="year" class="form-label">Año:</label>
+                            <input type="number" id="year" name="year" class="form-control" value="{{ movie.year }}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="genre" class="form-label">Género:</label>
+                            <select id="genre" name="genre" class="form-select" required>
+                                <option value="Infantil" {% if movie.genre == 'Infantil' %}selected{% endif %}>Infantil</option>
+                                <option value="Fantástico" {% if movie.genre == 'Fantástico' %}selected{% endif %}>Fantástico</option>
+                                <option value="Comedia" {% if movie.genre == 'Comedia' %}selected{% endif %}>Comedia</option>
+                                <option value="Acción" {% if movie.genre == 'Acción' %}selected{% endif %}>Acción</option>
+                                <option value="Terror" {% if movie.genre == 'Terror' %}selected{% endif %}>Terror</option>
+                                <option value="Romántica" {% if movie.genre == 'Romántica' %}selected{% endif %}>Romántica</option>
+                                <option value="Drama" {% if movie.genre == 'Drama' %}selected{% endif %}>Drama</option>
+                                <option value="Ciencia Ficción" {% if movie.genre == 'Ciencia Ficción' %}selected{% endif %}>Ciencia Ficción</option>
+                                <option value="Documental" {% if movie.genre == 'Documental' %}selected{% endif %}>Documental</option>
+                                 <option value="Otro" {% if movie.genre == 'Otro' %}selected{% endif %}>Otro</option>
+                            </select>
+                        </div>
+                        <div class="d-flex justify-content-between mt-4">
+                             <button type="submit" class="btn btn-success">Guardar Cambios</button>
+                             <a href="{{ url_for('index') }}" class="btn btn-secondary">Cancelar</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+</body>
+</html>
