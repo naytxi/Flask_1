@@ -129,8 +129,15 @@ def index():
         response.raise_for_status()
         data = response.json()
         results = data.get('results', [])
-        num_samples = min(5, len(results))
-        peliculas_api_carousel = random.sample(results, num_samples) if num_samples > 0 else []
+        max_items_deseados = 12 # <<-- CAMBIA ESTE NÚMERO por cuantos quieras (ej: 10, 12, 15)
+        num_items_api = len(results)
+        # Toma como máximo los deseados, o menos si la API devuelve menos
+        num_a_tomar = min(max_items_deseados, num_items_api)
+
+        # Toma los PRIMEROS 'num_a_tomar' resultados (en lugar de aleatorios)
+        # La API de populares ya suele devolverlos ordenados por popularidad
+        peliculas_api_carousel = results[:num_a_tomar]
+        # --------------------------
         for pelicula in peliculas_api_carousel:
             poster_path = pelicula.get('poster_path')
             pelicula['poster_url'] = f'{IMAGE_BASE_URL}{poster_path}' if poster_path else url_for('static', filename='images/default_poster.png')
