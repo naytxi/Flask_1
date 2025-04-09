@@ -114,7 +114,7 @@ def index():
         response.raise_for_status()
         data = response.json()
         results = data.get('results', [])
-        max_items_deseados = 12 # <<-- CAMBIA ESTE NÚMERO por cuantos quieras (ej: 10, 12, 15)
+        max_items_deseados = 12 
         num_items_api = len(results)
         # Toma como máximo los deseados, o menos si la API devuelve menos
         num_a_tomar = min(max_items_deseados, num_items_api)
