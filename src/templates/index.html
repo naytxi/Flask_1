@@ -53,7 +53,7 @@
             {% endwith %}
 
             {# CAMBIO: Formulario apunta a 'add_movie_db' #}
-            <form action="{{ url_for('add_movie_db') }}" method="POST">
+            <form action="{{ url_for('main.add_movie_db') }}" method="POST">
                 <label for="title">Título:</label>
                 <input type="text" id="title" name="title" required>
                 <label for="director">Director:</label>
@@ -82,9 +82,9 @@
                         </span>
                         <span class="actions">
                             {# CAMBIO: Enlace Editar apunta a 'edit_movie_db_form' #}
-                            <a href="{{ url_for('edit_movie_db_form', movie_id=pelicula.id) }}" class="btn btn-primary btn-sm">Editar</a>
+                            <a href="{{ url_for('main.edit_movie_db_form', movie_id=pelicula.id) }}" class="btn btn-primary btn-sm">Editar</a>
                             {# CAMBIO: Eliminar usa formulario POST apuntando a 'delete_movie_db' #}
-                            <form action="{{ url_for('delete_movie_db', movie_id=pelicula.id) }}" method="POST" style="display: inline;" onsubmit="return confirm('¿Estás seguro de que deseas eliminar &quot;{{ pelicula.title | e }}&quot;?');">
+                            <form action="{{ url_for('main.delete_movie_db', movie_id=pelicula.id) }}" method="POST" style="display: inline;" onsubmit="return confirm('¿Estás seguro de que deseas eliminar &quot;{{ pelicula.title | e }}&quot;?');">
                                <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
                             </form>
                         </span>

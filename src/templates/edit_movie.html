@@ -23,7 +23,7 @@
         {% endwith %}
 
         {# CAMBIO: Formulario apunta a la ruta de BD 'update_movie_db' #}
-        <form action="{{ url_for('update_movie_db', movie_id=movie.id) }}" method="POST">
+        <form action="{{ url_for('main.update_movie_db', movie_id=movie.id) }}" method="POST">
             <div> {# Quitado mb-3 de Bootstrap #}
                 <label for="title">Título:</label>
                 <input type="text" id="title" name="title" value="{{ movie.title | e }}" required>
@@ -54,7 +54,7 @@
             <div style="display: flex; justify-content: space-between; margin-top: 25px;">
                  {# Usa los botones definidos en tu style.css o botones Bootstrap #}
                  <button type="submit" class="btn btn-primary">Guardar Cambios</button> {# Asume que tienes .btn y .btn-primary en tu CSS #}
-                 <a href="{{ url_for('index') }}" class="btn btn-danger">Cancelar</a> {# Asume que tienes .btn y .btn-danger en tu CSS #}
+                 <a href="{{ url_for('main.index') }}" class="btn btn-danger">Cancelar</a> {# Asume que tienes .btn y .btn-danger en tu CSS #}
             </div>
         </form>
     </div>
